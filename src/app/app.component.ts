@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConferenceService } from './conference.service';
 
 @Component({
@@ -8,6 +10,7 @@ import { ConferenceService } from './conference.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  @ViewChild('formDirective') private formDirective: NgForm;
   title = 'conference';
   dataArray = [];
   firstFormGroup: FormGroup;
@@ -15,8 +18,9 @@ export class AppComponent implements OnInit {
   isEditable = false;
   TimeSlots = [];
   existingBookings = [];
+  
 
-  constructor(private _formBuilder: FormBuilder, private service: ConferenceService) {}
+  constructor(private _formBuilder: FormBuilder, private service: ConferenceService, private snack: MatSnackBar) {}
 
   ngOnInit() {
     this.firstFormGroup = this._formBuilder.group({
@@ -31,9 +35,13 @@ export class AppComponent implements OnInit {
   }
 
   bookSlot(slot) {
-    const employeeId = this.firstFormGroup.get('employeeId').value;
+    const room = this.firstFormGroup.get('room').value;
     const date = this.firstFormGroup.get('date').value;
-    this.secondFormGroup.get('slot').setValue(slot);
+    if (this.service.checkSlotAvailabiltiy(date, room, slot)) {
+      this.secondFormGroup.get('slot').setValue(slot);
+    } else {
+      this.snack.open('Selected slot does not available', '', {duration: 800});
+    }
   }
   confirmSlot() {
     const employeeId = this.firstFormGroup.get('employeeId').value;
@@ -45,15 +53,18 @@ export class AppComponent implements OnInit {
     }
   }
   getExistingBookings() {
-    console.log('getting current bookings');
     const employeeId = this.firstFormGroup.get('employeeId').value;
     const date = this.firstFormGroup.get('date').value;
     this.existingBookings = this.service.getAllBookedSlots(date, employeeId);
-    console.log(this.existingBookings);
   }
   removeSlot(slot){
     const employeeId = this.firstFormGroup.get('employeeId').value;
     const date = this.firstFormGroup.get('date').value;
     this.service.removeSlot(date, employeeId, slot);
+    this.getExistingBookings();
+  }
+  resetForm() {
+    this.formDirective.reset();
+    this.formDirective.resetForm();
   }
 }

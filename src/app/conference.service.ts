@@ -54,18 +54,39 @@ bookedSlots = [];
       room,
       slot
     };
-    this.bookedSlots.push(slotData);
-    console.log(this.bookedSlots);
+    if (this.checkSlotAvailabiltiy(date, room, slot)) {
+      this.bookedSlots.push(slotData);
+    } else {
+      console.log('unindented code');
+    }
   }
   getAllBookedSlots(date, employeeId) {
-    const slots = this.bookedSlots;
-    console.log('slots', slots);
-    return slots;
+    const roomSet = new Set(this.bookedSlots.map(x => x.room));
+    let rooms = Array.from(roomSet);
+    rooms = rooms.sort((a, b) => a - b);
+    const roomArray = [];
+    rooms.forEach(x => {
+      const slots = this.bookedSlots.filter(y => y.date.toDateString() == date.toDateString() && y.room == x && y.employeeId == employeeId);
+      if (slots.length) {
+        roomArray.push({
+          room: x,
+          slots: slots
+        });
+      }
+    });
+    return roomArray;
   }
   removeSlot(date, employeeId, slot) {
-    const index = this.bookedSlots.findIndex(x => x.slot == slot && x.date == date && x.employeeId == employeeId);
+    const index = this.bookedSlots.findIndex(x => x.slot == slot && x.date.toDateString() == date.toDateString() && x.employeeId == employeeId);
     if (index) {
       this.bookedSlots.splice(index, 1);
     }
+  }
+  checkSlotAvailabiltiy(date, room, slot) {
+    const slotIndex = this.bookedSlots.findIndex(x => x.room == room && x.slot == slot && x.date.toDateString() == date.toDateString());
+    if (slotIndex > -1) {
+      return false;
+    }
+    return true;
   }
 }

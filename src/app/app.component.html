@@ -1,40 +1,51 @@
 
 <mat-horizontal-stepper linear #stepper>
   <mat-step [stepControl]="firstFormGroup" [editable]="isEditable">
-    <form [formGroup]="firstFormGroup">
+    <form [formGroup]="firstFormGroup" #formDirective="ngForm">
       <ng-template matStepLabel>Choose Employee</ng-template>
-      <mat-form-field>
-        <mat-label>Employee Name</mat-label>
-        <mat-select formControlName="employeeId" placeholder="Select Employee">
-          <mat-option value="1">Employ 1</mat-option>
-          <mat-option value="2">Employ 2</mat-option>
-          <mat-option value="3">Employ 3</mat-option>
-          <mat-option value="4">Employ 4</mat-option>
-          <mat-option value="5">Employ 5</mat-option>
-          <mat-option value="6">Employ 6</mat-option>
-          <mat-option value="7">Employ 7</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Choose a date</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Conference Room</mat-label>
-        <mat-select formControlName="room" placeholder="Select Room">
-          <mat-option value="1">Room 1</mat-option>
-          <mat-option value="2">Room 2</mat-option>
-          <mat-option value="3">Room 3</mat-option>
-          <mat-option value="4">Room 4</mat-option>
-          <mat-option value="5">Room 5</mat-option>
-          <mat-option value="6">Room 6</mat-option>
-          <mat-option value="7">Room 7</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div>
-        <button (click)="getExistingBookings()" mat-button matStepperNext>Next</button>
+      <div class="row">
+        <div class="col-md-2">
+          <mat-form-field appearance="fill">
+            <mat-label>Employee Name</mat-label>
+            <mat-select formControlName="employeeId" placeholder="Select Employee">
+              <mat-option value="1">Employ 1</mat-option>
+              <mat-option value="2">Employ 2</mat-option>
+              <mat-option value="3">Employ 3</mat-option>
+              <mat-option value="4">Employ 4</mat-option>
+              <mat-option value="5">Employ 5</mat-option>
+              <mat-option value="6">Employ 6</mat-option>
+              <mat-option value="7">Employ 7</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2 mr30">
+          <mat-form-field appearance="fill">
+            <mat-label>Choose a date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="fill">
+            <mat-label>Conference Room</mat-label>
+            <mat-select formControlName="room" placeholder="Select Room">
+              <mat-option value="1">Room 1</mat-option>
+              <mat-option value="2">Room 2</mat-option>
+              <mat-option value="3">Room 3</mat-option>
+              <mat-option value="4">Room 4</mat-option>
+              <mat-option value="5">Room 5</mat-option>
+              <mat-option value="6">Room 6</mat-option>
+              <mat-option value="7">Room 7</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+      </div> 
+      <div class="row">
+        <div class="col-md-12">
+          <button (click)="getExistingBookings()" mat-button color="primary" matStepperNext>Next</button>
+        </div>
       </div>
     </form>
   </mat-step>
@@ -53,17 +64,19 @@
           <h4>Previously booked Sessions</h4>
           <div class="row">
             <div class="col-md-12">
-              <mat-chip-list aria-label="Fish selection">
-                <mat-chip color="primary" *ngFor="let item of existingBookings">{{item.slot}}
-                  <mat-icon (click)="removeSlot(slot)" style="cursor: pointer;">close</mat-icon>
-                </mat-chip>
-              </mat-chip-list>
+              <ng-container *ngFor="let item of existingBookings">
+                <h4>Room {{item.room}}</h4>
+                <mat-chip-list aria-label="Fish selection">
+                  <mat-chip color="primary" *ngFor="let obj of item.slots">{{obj.slot}}
+                    <mat-icon (click)="removeSlot(slot)" style="cursor: pointer;">close</mat-icon>
+                  </mat-chip>
+                </mat-chip-list>
+              </ng-container>
             </div>
           </div>
         </div>
       </div>
       <div>
-        <button mat-button matStepperPrevious>Back</button>
         <button (click)="confirmSlot()" mat-button matStepperNext>Next</button>
       </div>
     </form>
@@ -72,7 +85,7 @@
     <ng-template matStepLabel>Done</ng-template>
     <p>Congratulations! booking completed</p>
     <div>
-      <button mat-button (click)="stepper.reset()">Book another room</button>
+      <button mat-button (click)="stepper.reset(); resetForm();">Book another room</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>
