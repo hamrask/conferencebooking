@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
   isEditable = false;
   TimeSlots = [];
   existingBookings = [];
+  minDate = new Date();
   
 
   constructor(private _formBuilder: FormBuilder, private service: ConferenceService, private snack: MatSnackBar) {}
