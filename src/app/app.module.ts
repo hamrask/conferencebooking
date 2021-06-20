@@ -16,6 +16,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ReactiveFormsModule,
     MatChipsModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    StoreModule.forRoot(reducers, {
+      metaReducers
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
