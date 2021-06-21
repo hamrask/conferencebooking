@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store } from '@ngrx/store';
 import { ConferenceService } from './conference.service';
 
 @Component({
@@ -21,7 +22,7 @@ export class AppComponent implements OnInit {
   minDate = new Date();
   
 
-  constructor(private _formBuilder: FormBuilder, private service: ConferenceService, private snack: MatSnackBar) {}
+  constructor(private _formBuilder: FormBuilder, private service: ConferenceService, private snack: MatSnackBar, private store: Store) {}
 
   ngOnInit() {
     this.firstFormGroup = this._formBuilder.group({
@@ -38,7 +39,7 @@ export class AppComponent implements OnInit {
   bookSlot(slot) {
     const room = this.firstFormGroup.get('room').value;
     const date = this.firstFormGroup.get('date').value;
-    if (this.service.checkSlotAvailabiltiy(date, room, slot)) {
+    if (this.store.dispatch('checkSlotAvailabiltiy',{date, room, slot})) {
       this.secondFormGroup.get('slot').setValue(slot);
     } else {
       this.snack.open('Selected slot does not available', '', {duration: 800});
@@ -50,7 +51,7 @@ export class AppComponent implements OnInit {
     const slot = this.secondFormGroup.get('slot').value;
     const room = this.firstFormGroup.get('room').value;
     if (slot) {
-      this.service.bookSlot(date, employeeId, room, slot);
+      this.store.dispatch()(date, employeeId, room, slot);
     }
   }
   getExistingBookings() {

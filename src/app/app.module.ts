@@ -17,7 +17,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
 
 @NgModule({
   declarations: [
@@ -41,9 +40,7 @@ import { reducers, metaReducers } from './reducers';
     MatChipsModule,
     MatIconModule,
     MatSnackBarModule,
-    StoreModule.forRoot(reducers, {
-      metaReducers
-    })
+    StoreModule.forRoot({}, {})
   ],
   providers: [],
   bootstrap: [AppComponent]
