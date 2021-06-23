@@ -26,9 +26,8 @@ export const conferenceReducer = createReducer(timeSlots,
       room,
       slot
     };
-    state = [...state, slotData];
     console.log(state);
-    return state;
+    return [...state, slotData];
 }), on(removeSlot, (state, {date, employeeId, slot}) => {
   const index = state.findIndex(x => x.slot == slot && x.date.toDateString() == date.toDateString() && x.employeeId == employeeId);
   if (index) {
