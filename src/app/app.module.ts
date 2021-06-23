@@ -17,6 +17,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { StoreModule } from '@ngrx/store';
+import * as conference from './reducers/index';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { StoreModule } from '@ngrx/store';
     MatChipsModule,
     MatIconModule,
     MatSnackBarModule,
-    StoreModule.forRoot({}, {})
+    StoreModule.forRoot({timeSlots: conference.conferenceReducer}, {})
   ],
   providers: [],
   bootstrap: [AppComponent]

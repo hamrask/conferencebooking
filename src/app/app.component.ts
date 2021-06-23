@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { ConferenceService } from './conference.service';
+import { bookSlot, removeSlot } from './actions/conference.actions';
 
 @Component({
   selector: 'app-root',
@@ -39,7 +40,7 @@ export class AppComponent implements OnInit {
   bookSlot(slot) {
     const room = this.firstFormGroup.get('room').value;
     const date = this.firstFormGroup.get('date').value;
-    if (this.store.dispatch('checkSlotAvailabiltiy',{date, room, slot})) {
+    if (this.service.checkSlotAvailabiltiy(date, room, slot)) {
       this.secondFormGroup.get('slot').setValue(slot);
     } else {
       this.snack.open('Selected slot does not available', '', {duration: 800});
@@ -51,18 +52,18 @@ export class AppComponent implements OnInit {
     const slot = this.secondFormGroup.get('slot').value;
     const room = this.firstFormGroup.get('room').value;
     if (slot) {
-      this.store.dispatch()(date, employeeId, room, slot);
+      this.store.dispatch(bookSlot({date, employeeId, room, slot}));
     }
   }
-  getExistingBookings() {
+  async getExistingBookings() {
     const employeeId = this.firstFormGroup.get('employeeId').value;
     const date = this.firstFormGroup.get('date').value;
-    this.existingBookings = this.service.getAllBookedSlots(date, employeeId);
+    this.existingBookings = await this.service.getAllBookedSlots(date, employeeId);
   }
   removeSlot(slot){
     const employeeId = this.firstFormGroup.get('employeeId').value;
     const date = this.firstFormGroup.get('date').value;
-    this.service.removeSlot(date, employeeId, slot);
+    this.store.dispatch(removeSlot({date, employeeId, slot}));
     this.getExistingBookings();
   }
   resetForm() {
